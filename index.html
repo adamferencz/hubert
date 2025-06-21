@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="cs">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shyby pro Huberta - Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      body {
+        font-family: sans-serif;
+        background: #f7f7f7;
+        margin: 0;
+        padding: 2rem;
+      }
+      h1,
+      h2 {
+        text-align: center;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+      }
+      .card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      .big-number {
+        font-size: 2.5rem;
+        font-weight: bold;
+        text-align: center;
+        margin: 1rem 0;
+      }
+      canvas {
+        width: 100% !important;
+        height: auto !important;
+      }
+      .big-chart-container {
+        width: 100vw;
+        max-width: 1800px;
+        margin: 2rem auto 0 auto;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
+        padding: 2rem 1rem 2rem 1rem;
+        display: block;
+      }
+      .wide-canvas {
+        min-width: 100%;
+        min-height: 500px;
+        max-width: 100%;
+        display: block;
+        margin: 0 auto;
+      }
+      .top-list {
+        font-size: 1.2rem;
+        margin: 0;
+        padding: 0 1rem;
+        list-style: none;
+        text-align: left;
+      }
+      .top-list li {
+        margin-bottom: 0.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Shyby pro Huberta - Dashboard</h1>
+    <div class="big-number" id="countdown">Načítání času...</div>
+    <div class="grid">
+      <div class="card">
+        <h2>Celkový počet shybů</h2>
+        <div class="big-number" id="totalShyby">0</div>
+        <p style="text-align: center" id="percentDone"></p>
+      </div>
+      <div class="card">
+        <h2>Vybraná částka</h2>
+        <div class="big-number" id="moneyRaised">0 Kč</div>
+      </div>
+      <div class="card">
+        <h2>Nejvíc shybů</h2>
+        <ul class="top-list" id="topList"></ul>
+      </div>
+    </div>
+    <div class="big-chart-container">
+      <h2 style="text-align: center; margin-top: 2rem">Průběh akce</h2>
+      <div
+        style="
+          display: flex;
+          justify-content: center;
+          gap: 2rem;
+          margin-top: 2rem;
+        "
+      >
+        <iframe
+          width="1000"
+          height="979"
+          seamless
+          frameborder="0"
+          scrolling="no"
+          src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQrerrSFrNhq3AlCPJ7o2yxPmM0SK4I1aY9JfVb5QCvyHntuRGzIkgi7LbRYJKs06QEKJdLXLb9lt1A/pubchart?oid=460588029&amp;format=interactive"
+        ></iframe>
+        <iframe
+          width="764"
+          height="979"
+          seamless
+          frameborder="0"
+          scrolling="no"
+          src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQrerrSFrNhq3AlCPJ7o2yxPmM0SK4I1aY9JfVb5QCvyHntuRGzIkgi7LbRYJKs06QEKJdLXLb9lt1A/pubchart?oid=628782543&amp;format=interactive"
+        ></iframe>
+      </div>
+    </div>
+
+    <script>
+      const MAX_SHYBY = 40000;
+      const SHYB_KC = 2;
+      const EVENT_END = new Date("2025-06-22T16:00:00+02:00");
+
+      function formatTimeLabel(timeStr) {
+        // Expecting timeStr in ISO or similar format
+        const d = new Date(timeStr);
+        return (
+          d.getHours().toString().padStart(2, "0") +
+          ":" +
+          d.getMinutes().toString().padStart(2, "0")
+        );
+      }
+
+      async function fetchSheetData() {
+        try {
+          const response = await fetch(
+            "https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLhBL6jFXbro9tqOk2r3_rD2LLfdNbOA_UJGFvmBFG3UrV0xxuIyOf3XoWNYLgSkR02jkBtgsjGh-DyN6kv1QFX1LdE4Eqf5EqOEXkh7pGz739Oml58aCcw27YKTy9J9h3P6E6xq5d79SK2NJE-5xVFLLLO5xDXdGcaAAwFY-osqatMKd_dxo7YgoGtAh-FKs-YU7lc9vCRW1P1zkQX4BqrFlKu0nT5oRw9GJqV8It7-QyD8a9ceYu_he694rtUYRqttAHFxy_xki2MAcz6dYtBouUm1fHPkPmpi4uPy&lib=MmAHAgxQo3XJNlxWl6z4CI5LYWQPgQA3B"
+          );
+          console.log("Fetch status:", response.status, response.statusText);
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          const json = await response.json();
+          console.log("Fetched JSON:", json);
+          console.log("První řádek JSON:", json[0]);
+          console.log("Klíče v prvním řádku:", Object.keys(json[0]));
+
+          // Preferuj klíč "Odevzdal shybů" pokud existuje
+          let shybyKey = "Odevzdal shybů";
+          if (!(shybyKey in json[0])) {
+            shybyKey = "Shybů všichni";
+          }
+          if (!(shybyKey in json[0])) {
+            // Najdi první klíč s číslem v prvním řádku
+            for (const k in json[0]) {
+              if (
+                typeof json[0][k] === "string" &&
+                !isNaN(parseInt(json[0][k]))
+              ) {
+                shybyKey = k;
+                break;
+              }
+            }
+          }
+          console.log("Použitý klíč pro shyby:", shybyKey);
+
+          let total = 0;
+          const chartData = [];
+          const people = {};
+
+          for (const row of json) {
+            const shyby = parseInt(row[shybyKey]);
+            const time = row["Time"];
+            const name = row["Name"] || "--";
+            if (!isNaN(shyby)) {
+              total += shyby;
+              chartData.push({ x: formatTimeLabel(time), y: total });
+              if (!people[name]) people[name] = 0;
+              people[name] += shyby;
+            }
+          }
+
+          // Top N performers
+          const topN = Object.entries(people)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 5);
+          const topList = document.getElementById("topList");
+          topList.innerHTML = topN
+            .map(
+              ([name, shyby], i) =>
+                `<li><b>${i + 1}.</b> ${name} – ${shyby} shybů</li>`
+            )
+            .join("");
+
+          document.getElementById("totalShyby").textContent = total;
+          document.getElementById("moneyRaised").textContent =
+            (total * SHYB_KC).toLocaleString() + " Kč";
+          document.getElementById("percentDone").textContent =
+            ((total / MAX_SHYBY) * 100).toFixed(1) + "% z 40 000 shybů";
+        } catch (e) {
+          console.error("Chyba při načítání dat z endpointu:", e);
+        }
+      }
+
+      function updateCountdown() {
+        const now = new Date();
+        const diff = EVENT_END - now;
+        if (diff <= 0) {
+          document.getElementById("countdown").textContent = "Akce skončila";
+          return;
+        }
+        const h = Math.floor(diff / 3600000);
+        const m = Math.floor((diff % 3600000) / 60000);
+        const s = Math.floor((diff % 60000) / 1000);
+        document.getElementById(
+          "countdown"
+        ).textContent = `Zbývá ${h}h ${m}m ${s}s`;
+      }
+
+      setInterval(updateCountdown, 1000);
+      updateCountdown();
+      fetchSheetData();
+    </script>
+  </body>
+</html>
