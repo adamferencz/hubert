@@ -91,7 +91,7 @@
         margin-bottom: 0.5rem;
       }
       .big-chart-container {
-        width: 100vw;
+        width: 75vw;
         max-width: 1800px;
         margin: 2rem auto 0 auto;
         background: linear-gradient(120deg, #fff 60%, #e0e7ff 100%);
@@ -120,6 +120,35 @@
         box-shadow: 0 2px 16px #2563eb11;
         z-index: 1;
       }
+      .charts-flex {
+        display: flex;
+        flex-direction: row;
+        gap: 2rem;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .donio-card iframe {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        height: 320px !important;
+      }
+      @media (max-width: 900px) {
+        .charts-flex {
+          flex-direction: column;
+          gap: 1.2rem;
+        }
+        .donio-card {
+          padding: 1rem 0.5rem;
+          max-width: 98vw;
+        }
+        .donio-card iframe {
+          width: 100% !important;
+          min-width: 0 !important;
+          max-width: 100% !important;
+          height: 180px !important;
+        }
+      }
     </style>
   </head>
   <body>
@@ -139,37 +168,35 @@
         <h2>Nejvíc shybů</h2>
         <ul class="top-list" id="topList"></ul>
       </div>
-    </div>
-    <div class="big-chart-container">
-      <div style="margin-top: 2rem; display: flex; justify-content: center">
+      <div class="card donio-card">
+        <h2>Podpořte akci na Donio</h2>
         <iframe
           src="https://donio.cz/shyby-pro-huberta-by-wafk-challenge?tab=about-story"
-          width="1200"
-          height="600"
-          style="border: 1px solid #ccc; border-radius: 10px; background: white"
+          width="100%"
+          height="320"
+          style="border: 1px solid #ccc; border-radius: 10px; background: white; width:100%; min-width:0; max-width:100%; display:block; margin:0 auto;"
           allowfullscreen
         ></iframe>
       </div>
-      <h2 style="text-align: center; margin-top: 2rem">Průběh akce</h2>
-      <div
-        style="
-          display: flex;
-          justify-content: center;
-          gap: 2rem;
-          margin-top: 2rem;
-        "
-      >
+    </div>
+    <!-- Grafy vedle sebe v samostatném kontejneru -->
+    <div class="charts-flex" style="margin: 2rem auto 0 auto; max-width: 1800px;">
+      <div class="card" style="flex:1; margin-bottom:2rem; min-width:300px;">
         <iframe
           width="1000"
           height="979"
+          style="width:100%; max-width:1000px; display:block; margin:0 auto;"
           seamless
           frameborder="0"
           scrolling="no"
           src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQrerrSFrNhq3AlCPJ7o2yxPmM0SK4I1aY9JfVb5QCvyHntuRGzIkgi7LbRYJKs06QEKJdLXLb9lt1A/pubchart?oid=460588029&amp;format=interactive"
         ></iframe>
+      </div>
+      <div class="card" style="flex:1; margin-bottom:2rem; min-width:300px;">
         <iframe
           width="764"
           height="979"
+          style="width:100%; max-width:764px; display:block; margin:0 auto;"
           seamless
           frameborder="0"
           scrolling="no"
