@@ -7,53 +7,77 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
       body {
-        font-family: sans-serif;
-        background: #f7f7f7;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: linear-gradient(135deg, #e0e7ff 0%, #2563eb 100%);
+        min-height: 100vh;
         margin: 0;
         padding: 2rem;
+        position: relative;
+        overflow-x: hidden;
+      }
+      body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 0;
+        background: repeating-radial-gradient(
+            circle at 20% 30%,
+            #2563eb22 0,
+            #2563eb11 40px,
+            transparent 80px
+          ),
+          repeating-radial-gradient(
+            circle at 80% 70%,
+            #facc1533 0,
+            #facc1511 60px,
+            transparent 120px
+          );
+        pointer-events: none;
       }
       h1,
       h2 {
         text-align: center;
+        color: #1e293b;
+        text-shadow: 0 2px 8px #fff8, 0 1px 0 #facc15cc;
       }
       .grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         gap: 2rem;
         margin-top: 2rem;
+        z-index: 1;
+        position: relative;
       }
       .card {
-        background: white;
+        background: linear-gradient(120deg, #fff 60%, #e0e7ff 100%);
+        border-radius: 18px;
+        box-shadow: 0 4px 32px 0 #2563eb22, 0 1.5px 0 #facc1544;
         padding: 1.5rem;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border: 1.5px solid #2563eb22;
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+      }
+      .card:after {
+        content: "";
+        position: absolute;
+        top: -40px;
+        right: -40px;
+        width: 120px;
+        height: 120px;
+        background: radial-gradient(circle, #2563eb33 0%, transparent 80%);
+        z-index: 0;
       }
       .big-number {
-        font-size: 2.5rem;
+        font-size: 2.7rem;
         font-weight: bold;
         text-align: center;
         margin: 1rem 0;
-      }
-      canvas {
-        width: 100% !important;
-        height: auto !important;
-      }
-      .big-chart-container {
-        width: 100vw;
-        max-width: 1800px;
-        margin: 2rem auto 0 auto;
-        background: white;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
-        padding: 2rem 1rem 2rem 1rem;
-        display: block;
-      }
-      .wide-canvas {
-        min-width: 100%;
-        min-height: 500px;
-        max-width: 100%;
-        display: block;
-        margin: 0 auto;
+        color: #2563eb;
+        text-shadow: 0 2px 8px #fff8, 0 1px 0 #facc15cc;
       }
       .top-list {
         font-size: 1.2rem;
@@ -61,9 +85,40 @@
         padding: 0 1rem;
         list-style: none;
         text-align: left;
+        color: #1e293b;
       }
       .top-list li {
         margin-bottom: 0.5rem;
+      }
+      .big-chart-container {
+        width: 100vw;
+        max-width: 1800px;
+        margin: 2rem auto 0 auto;
+        background: linear-gradient(120deg, #fff 60%, #e0e7ff 100%);
+        border-radius: 18px;
+        box-shadow: 0 4px 32px 0 #2563eb22, 0 1.5px 0 #facc15;
+        padding: 2rem 1rem 2rem 1rem;
+        display: block;
+        border: 1.5px solid #2563eb22;
+        position: relative;
+        overflow: hidden;
+      }
+      .big-chart-container:before {
+        content: "";
+        position: absolute;
+        left: -40px;
+        bottom: -40px;
+        width: 120px;
+        height: 120px;
+        background: radial-gradient(circle, #facc1533 0%, transparent 80%);
+        z-index: 0;
+      }
+      iframe {
+        background: #fff;
+        border-radius: 12px;
+        border: 1.5px solid #2563eb22;
+        box-shadow: 0 2px 16px #2563eb11;
+        z-index: 1;
       }
     </style>
   </head>
@@ -86,12 +141,12 @@
       </div>
     </div>
     <div class="big-chart-container">
-              <div style="margin-top:2rem; display:flex; justify-content:center;">
+      <div style="margin-top: 2rem; display: flex; justify-content: center">
         <iframe
           src="https://donio.cz/shyby-pro-huberta-by-wafk-challenge?tab=about-story"
           width="1200"
           height="600"
-          style="border:1px solid #ccc; border-radius:10px; background:white;"
+          style="border: 1px solid #ccc; border-radius: 10px; background: white"
           allowfullscreen
         ></iframe>
       </div>
