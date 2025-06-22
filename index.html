@@ -54,7 +54,7 @@
       .card {
         background: linear-gradient(120deg, #fff 60%, #e0e7ff 100%);
         border-radius: 18px;
-        box-shadow: 0 4px 32px 0 #2563eb22, 0 1.5px 0 #facc1544;
+        box-shadow: 0 4px 32px 0 #2563eb22, 0 1.5px 0 #facc15cc;
         padding: 1.5rem;
         border: 1.5px solid #2563eb22;
         position: relative;
@@ -78,6 +78,11 @@
         margin: 1rem 0;
         color: #2563eb;
         text-shadow: 0 2px 8px #fff8, 0 1px 0 #facc15cc;
+      }
+      /* Zmenšení čísel pro celkový počet shybů a vyshybovanou částku, odpočet zůstává velký */
+      #totalShyby.big-number,
+      #moneyRaised.big-number {
+        font-size: 4.2rem;
       }
       .top-list {
         font-size: 1.2rem;
@@ -321,6 +326,7 @@
       setInterval(updateCountdown, 1000);
       updateCountdown();
       fetchSheetData();
+      setInterval(fetchSheetData, 5 * 60 * 1000); // Automatický refresh každých 5 minut
     </script>
   </body>
 </html>
